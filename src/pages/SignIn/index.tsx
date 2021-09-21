@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useCallback, useRef } from 'react';
 import { Image, View, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from './RootStackParamList ';
+import { Form } from '@unform/mobile';
+import { FormHandles } from '@unform/core';
 
 type authScreenProp = StackNavigationProp<RootStackParamList, 'SignIn'>;
 
@@ -22,7 +24,12 @@ import {
 } from './styles';
 
 const SignIn: React.FC = () => {
+  const formRef = useRef<FormHandles>(null);
   const navigation = useNavigation<authScreenProp>();
+
+  const handleSignIn = useCallback((data: object) => {
+    console.log(data);
+  }, []);
 
   return (
     <>
@@ -42,10 +49,14 @@ const SignIn: React.FC = () => {
               <Title>Faça seu logon</Title>
             </View>
 
-            <Input name='email' icon='mail' placeholder='E-mail' />
-            <Input name='password' icon='lock' placeholder='Senha' />
+            <Form onSubmit={handleSignIn} ref={formRef}>
+              <Input name='email' icon='mail' placeholder='E-mail' />
+              <Input name='password' icon='lock' placeholder='Senha' />
 
-            <Button onPress={() => {console.log('Deu certo')}}>Entrar</Button>
+              <Button onPress={() => formRef.current?.submitForm()}>
+                Entrar
+              </Button>
+            </Form>
 
             <ForgotPassword onPress={() => {}}>
               <ForgotPasswordText>Esqueci minha senha</ForgotPasswordText>
